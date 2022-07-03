@@ -12,15 +12,6 @@
     'use strict';
     console.log("[YT-Unclutter] YouTube Unclutter script loaded");
 
-    function setButtonBarInterval() {
-        return setInterval(() => {
-            if (document.querySelector("#info>#menu-container>#menu>ytd-menu-renderer>#top-level-buttons-computed>ytd-toggle-button-renderer")) {
-                console.log("[YT-Unclutter] Menu container found, executing...");
-                doUnclutter()
-            }
-        }, 1000);
-    }
-
     // DJB2 hashing function
     // Credit: https://gist.github.com/eplawless/52813b1d8ad9af510d85?permalink_comment_id=3367765#gistcomment-3367765
     function djb2(str) {
