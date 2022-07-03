@@ -52,11 +52,9 @@
         clearInterval(waitForButtonBar);
         waitForButtonBar = null;
         const ytButtonsParent = document.querySelector("#info>#menu-container>#menu>ytd-menu-renderer>#top-level-buttons-computed");
-        const ytButtons = ytButtonsParent.children;
-        const ytButtonsLen = ytButtonsParent.querySelectorAll("ytd-toggle-button-renderer").length
-            + ytButtonsParent.querySelectorAll("ytd-button-renderer").length;
+        const ytButtons = [...ytButtonsParent.children];
 
-        console.log(`[YT-Unclutter] Found ${ytButtonsLen} native YT buttons`);
+        console.log(`[YT-Unclutter] Found ${ytButtons.length} native YT buttons`);
         console.log(ytButtons);
 
         const buttonHashes = {
@@ -71,23 +69,22 @@
 
         let buttonsToRemove = ["share", "download", "thank", "clip"];
 
-        let buttonMatches = [];
-        for (let i = 0; i < ytButtonsLen; i++) {
+        let fakeIndex = 0;
+        for (let i = 0; i < ytButtons.length; i++) {
             let button = ytButtons[i];
             let buttonHash = djb2(button.querySelector("path").getAttribute("d"));
-            console.log(`Button #${i} has hash: ${buttonHash}`);
+            console.log(`Button #${fakeIndex} has hash: ${buttonHash}`);
             for (let buttonType of buttonsToRemove) {
                 if (buttonHash === buttonHashes[buttonType]) {
-                    console.log(`[YT-Unclutter] Removing ${buttonType} button (${i} - ${buttonHash})`);
-                    buttonMatches.push(button);
+                    console.log(`[YT-Unclutter] Removing ${buttonType} button (#${fakeIndex} - ${buttonHash})`);
+                    button.remove();
+                    break;
                 }
             }
+            fakeIndex++;
         }
-        buttonMatches.forEach(button => {
-            button.remove();
-        });
 
-        console.log(ytButtons);
+        //console.log(ytButtons);
         console.log("[YT-Unclutter] Uncluttering done");
     }
 })();
