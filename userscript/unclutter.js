@@ -21,6 +21,18 @@
         }, 1000);
     }
 
+    // DJB2 hashing function
+    // Credit: https://gist.github.com/eplawless/52813b1d8ad9af510d85?permalink_comment_id=3367765#gistcomment-3367765
+    function djb2(str) {
+        let len = str.length
+        let h = 5381
+
+        for (let i = 0; i < len; i++) {
+            h = h * 33 ^ str.charCodeAt(i)
+        }
+        return h >>> 0
+    }
+
     let waitForButtonBar = null;
 
     let location = window.location.href;
@@ -41,28 +53,39 @@
         waitForButtonBar = null;
         const ytButtonsParent = document.querySelector("#info>#menu-container>#menu>ytd-menu-renderer>#top-level-buttons-computed");
         const ytButtons = ytButtonsParent.children;
-        const ytButtonsLen = ytButtonsParent.querySelectorAll("ytd-toggle-button-renderer").length 
-                           + ytButtonsParent.querySelectorAll("ytd-button-renderer").length;
-        
+        const ytButtonsLen = ytButtonsParent.querySelectorAll("ytd-toggle-button-renderer").length
+            + ytButtonsParent.querySelectorAll("ytd-button-renderer").length;
+
         console.log(`[YT-Unclutter] Found ${ytButtonsLen} native YT buttons`);
+        console.log(ytButtons);
 
-        // Remove Share button (Just copy the URL)
-        ytButtons[2].remove();
-        console.log("[YT-Unclutter] Removed 'Share' button.");
-
-        // Remove Download button (Premium-only)
-        ytButtons[2].remove();
-        console.log("[YT-Unclutter] Removed 'Download' button.");
-
-        // Remove Donate button
-        if (ytButtonsLen === 7) {
-            ytButtons[2].remove();
-            console.log("[YT-Unclutter] Found & removed 'Donate' button.");
+        const buttonHashes = {
+            like: 4121615887,
+            dislike: 1508558179,
+            share: 3222078241,
+            download: 668597389,
+            thank: 3561708383,
+            clip: 1038096254,
+            save: 2447476316
         }
 
-        // Remove Clip button (Mostly unused)
-        ytButtons[2].remove();
-        console.log("[YT-Unclutter] Removed 'Clip' button.");
+        let buttonsToRemove = ["share", "download", "thank", "clip"];
+
+        let buttonMatches = [];
+        for (let i = 0; i < ytButtonsLen; i++) {
+            let button = ytButtons[i];
+            let buttonHash = djb2(button.querySelector("path").getAttribute("d"));
+            console.log(`Button #${i} has hash: ${buttonHash}`);
+            for (let buttonType of buttonsToRemove) {
+                if (buttonHash === buttonHashes[buttonType]) {
+                    console.log(`[YT-Unclutter] Removing ${buttonType} button (${i} - ${buttonHash})`);
+                    buttonMatches.push(button);
+                }
+            }
+        }
+        buttonMatches.forEach(button => {
+            button.remove();
+        });
 
         console.log(ytButtons);
         console.log("[YT-Unclutter] Uncluttering done");
