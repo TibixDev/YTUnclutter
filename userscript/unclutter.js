@@ -52,7 +52,10 @@
                 let children = [...element.children];
                 if (children.length > 0) {
                     for (let i = 0; i < children.length; i++) {
-                        if (!children[i].querySelector(selector)) {
+                        //if (!children[i].querySelector(selector)) {
+                        //    return false;
+                        //}
+                        if (!children[i].getElementsByTagName(selector).length) {
                             return false;
                         }
                     }
@@ -93,8 +96,9 @@
             if (window.location.href.includes("watch?v=")) {
                 console.log("[YT-Unclutter] Video URL detected, uncluttering...");                
                 waitForElem("#top-level-buttons-computed path")
-                    .then(() => {
-                        doUnclutter();
+                    .then(async () => {
+                        console.log("[YT-Unclutter] Found first path element...");  
+                        await doUnclutter();
                     })
 
             }
@@ -127,7 +131,7 @@
         for (let i = 0; i < ytButtons.length; i++) {
             let button = ytButtons[i];
             console.log(`Iter #${i} | Button: ${!!button}`)
-            let buttonHash = djb2(button.querySelector("path").getAttribute("d"));
+            let buttonHash = djb2(button.getElementsByTagName("path")[0].getAttribute("d"));
             console.log(`Button #${i} has hash: ${buttonHash}`);
             for (let buttonType of buttonsToRemove) {
                 if (buttonHash === buttonHashes[buttonType]) {
