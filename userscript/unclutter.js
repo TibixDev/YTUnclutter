@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         YouTube Unclutter
-// @version      0.1
+// @version      0.2
 // @description  This little script aims clean up the YouTube UI by removing unnecessary elements.
 // @author       TibixDev
 // @match        https://www.youtube.com/*
 // @icon         https://i.imgur.com/aAEvYbj.png
-// @grant        GM_addStyle
+// @license      MIT
+// @homepageURL  https://github.com/TibixDev/YTUnclutter
 // ==/UserScript==
 
 (async function () {
